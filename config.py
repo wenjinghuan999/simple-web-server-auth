@@ -14,7 +14,7 @@ ACCESS_KEYS = {
 # Server configuration
 HOST = '0.0.0.0'
 PORT = 5000
-DEBUG = True
+DEBUG = False
 
 # HTTPS configuration
 USE_HTTPS = False

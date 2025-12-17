@@ -176,11 +176,14 @@ Authentication parameters can be passed either as:
 
 ## Security Notes
 
-- Keep your secret keys secure and never commit them to version control
-- Use HTTPS in production to prevent credential interception
-- The timestamp validation window is 5 minutes by default
-- Each request requires a fresh signature with current timestamp
-- Consider implementing rate limiting for production use
+- **Keep your secret keys secure**: Never commit them to version control. In production, load them from environment variables or a secure secrets management system
+- **Use HTTPS in production**: This prevents credential and data interception
+- **SHA1 Note**: This implementation uses SHA1 as specified in the requirements. While SHA1 is considered cryptographically weak for collision resistance, it's acceptable for HMAC-like signature verification when combined with proper timestamp validation and HTTPS
+- **Timing attack protection**: The implementation uses constant-time comparison for signature verification
+- **Timestamp validation**: The default 5-minute window prevents replay attacks
+- **Each request requires a fresh signature** with current timestamp
+- **Consider implementing rate limiting** for production use
+- **Debug mode**: Set `DEBUG = False` in production to avoid exposing sensitive information
 
 ## Project Structure
 

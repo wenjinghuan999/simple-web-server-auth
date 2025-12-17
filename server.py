@@ -5,10 +5,12 @@ Supports HTTPS and signature-based authentication.
 """
 
 import hashlib
+import hmac
 import time
 from functools import wraps
 from flask import Flask, request, jsonify
 import config
+from handlers import hello_handler, status_handler
 
 app = Flask(__name__)
 
@@ -65,8 +67,8 @@ def verify_signature(access_key, timestamp, signature, path):
     # Calculate expected signature
     expected_signature = calculate_signature(secret_key, access_key, timestamp, path)
     
-    # Compare signatures
-    if signature != expected_signature:
+    # Compare signatures using constant-time comparison to prevent timing attacks
+    if not hmac.compare_digest(signature, expected_signature):
         return False, "Invalid signature"
     
     return True, None
@@ -121,7 +123,6 @@ def index():
 @require_auth
 def hello():
     """Protected endpoint."""
-    from handlers import hello_handler
     return hello_handler.handle(request)
 
 
@@ -129,7 +130,6 @@ def hello():
 @require_auth
 def status():
     """Protected endpoint."""
-    from handlers import status_handler
     return status_handler.handle(request)
 
 
