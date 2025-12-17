@@ -55,13 +55,10 @@ Then set `USE_HTTPS = True` in `config.py`.
 
 ## API Endpoints
 
-### Public Endpoints
-
-- `GET /` - Server information (no authentication required)
-
-### Protected Endpoints
-
+- `GET /` - Natural language query endpoint (requires authentication).
+  - Parameter: `q` (e.g., "hello", "status", "hello Alice")
 - `GET /api/hello` - Hello world endpoint (requires authentication)
+  - Parameter: `name` (optional)
 - `GET /api/status` - Server status endpoint (requires authentication)
 
 ## Usage Examples

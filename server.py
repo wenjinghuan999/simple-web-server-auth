@@ -105,18 +105,38 @@ def require_auth(f):
     return decorated_function
 
 
-@app.route('/')
-def index():
-    """Public endpoint - no authentication required."""
+# List of available handlers
+HANDLERS = [hello_handler, status_handler]
+
+
+def dispatch_query(query):
+    """
+    Dispatch the query to the appropriate handler based on natural language content.
+    """
+    if not query:
+        return jsonify({
+            'message': 'Simple Web Server with Authorization',
+            'version': '1.0',
+            'usage': 'Provide a query parameter "q" with your intent (e.g., "hello", "status").'
+        })
+    
+    for handler in HANDLERS:
+        response = handler.handle_query(request, query)
+        if response is not None:
+            return response
+            
     return jsonify({
-        'message': 'Simple Web Server with Authorization',
-        'version': '1.0',
-        'endpoints': {
-            '/': 'Public endpoint',
-            '/api/hello': 'Protected endpoint - requires authentication',
-            '/api/status': 'Protected endpoint - requires authentication'
-        }
-    })
+        'error': 'Unknown query intent',
+        'message': f"Could not understand query: {query}"
+    }), 400
+
+
+@app.route('/')
+@require_auth
+def index():
+    """Protected endpoint - dispatches based on query."""
+    q = request.args.get('q')
+    return dispatch_query(q)
 
 
 @app.route('/api/hello')

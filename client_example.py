@@ -87,19 +87,53 @@ def main():
     print("Simple Web Server Auth - Client Example")
     print("=" * 60)
     
-    # Test 1: Public endpoint (no auth required)
-    print("\n[Test 1] Accessing public endpoint (no authentication)")
+    # Test 1: Index endpoint (now protected)
+    print("\n[Test 1] Accessing index endpoint with query dispatching")
     print("-" * 60)
+    
+    # 1a. Query for 'hello'
+    print("\n--- Query: q=hello ---")
     try:
-        import requests
-        response = requests.get(f"{server_url}/")
-        print(f"Response: {response.text}")
-    except ImportError:
-        print("Skipping - requests library not installed")
+        make_request(server_url, "/", access_key, secret_key, {'q': 'hello'})
+    except Exception as e:
+        print(f"Error: {e}")
+
+    # 1b. Query for 'status'
+    print("\n--- Query: q=status ---")
+    try:
+        make_request(server_url, "/", access_key, secret_key, {'q': 'status'})
+    except Exception as e:
+        print(f"Error: {e}")
+
+    # 1c. Query for '你好' (Chinese)
+    print("\n--- Query: q=你好 ---")
+    try:
+        make_request(server_url, "/", access_key, secret_key, {'q': '你好'})
+    except Exception as e:
+        print(f"Error: {e}")
+
+    # 1d. Query with parameter 'hello Alice'
+    print("\n--- Query: q=hello Alice ---")
+    try:
+        make_request(server_url, "/", access_key, secret_key, {'q': 'hello Alice'})
+    except Exception as e:
+        print(f"Error: {e}")
+
+    # 1e. Unknown query
+    print("\n--- Query: q=unknown ---")
+    try:
+        make_request(server_url, "/", access_key, secret_key, {'q': 'unknown'})
+    except Exception as e:
+        print(f"Error: {e}")
+
+    # 1f. No query
+    print("\n--- No Query ---")
+    try:
+        make_request(server_url, "/", access_key, secret_key)
     except Exception as e:
         print(f"Error: {e}")
     
-    # Test 2: Protected endpoint with valid auth
+    # Test 2: Protected endpoint with valid auth (Direct access)
     print("\n[Test 2] Accessing protected endpoint with valid authentication")
     print("-" * 60)
     try:
